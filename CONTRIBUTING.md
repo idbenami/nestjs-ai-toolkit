@@ -1,6 +1,6 @@
-# Contributing to nestjs-mongoose-dac
+# Contributing to nestjs-ai-toolkit
 
-Thank you for considering contributing to `nestjs-mongoose-dac`! Whether it's fixing a bug, adding a feature, or improving documentation - all contributions are welcome.
+Thank you for considering contributing to `nestjs-ai-toolkit`! Whether it's fixing a bug, adding a feature, or improving documentation — all contributions are welcome.
 
 ## Quick Start
 
@@ -18,7 +18,7 @@ Thank you for considering contributing to `nestjs-mongoose-dac`! Whether it's fi
 
 ```bash
 # Clone your fork
-git clone https://github.com/YOUR_USERNAME/nestjs-mongoose-dac.git
+git clone https://github.com/YOUR_USERNAME/nestjs-ai-toolkit.git
 
 # Install dependencies
 npm install
@@ -34,7 +34,7 @@ npm test
 npm test
 
 # Run tests in watch mode
-npm run test:watch
+npm run test:dev
 ```
 
 ### Testing Your Changes
@@ -47,26 +47,24 @@ The best way to test your changes is to use the package in a real NestJS applica
 nest new test-app
 ```
 
-2. Link your local `nestjs-mongoose-dac`:
+2. Link your local `nestjs-ai-toolkit`:
 
 ```bash
-# In nestjs-mongoose-dac directory
+# In nestjs-ai-toolkit directory
 npm link
 
 # In your test app directory
-npm link nestjs-mongoose-dac
+npm link nestjs-ai-toolkit
 ```
 
 3. Use it in your test app:
 
 ```typescript
-import { MongooseModule } from 'nestjs-mongoose-dac';
+import { Module } from '@nestjs/common';
+import { AiToolsModule } from 'nestjs-ai-toolkit';
 
 @Module({
-  imports: [
-    MongooseModule.forRoot('mongodb://localhost:27017/test'),
-    MongooseModule.forFeature([{ name: 'Cat', schema: CatSchema }]),
-  ],
+  imports: [AiToolsModule],
 })
 export class AppModule {}
 ```
@@ -88,19 +86,19 @@ We follow [Conventional Commits](https://www.conventionalcommits.org/). Each com
 
   - New features that add functionality
   - Triggers **MINOR** version bump (1.1.0 → 1.2.0)
-  - Example: `feat: add support for dynamic access policies`
+  - Example: `feat: add optional filter to tool discovery`
 
 - `fix: <description>`
 
   - Bug fixes and patches
   - Triggers **PATCH** version bump (1.1.1 → 1.1.2)
-  - Example: `fix: resolve issue with pre-hook execution`
+  - Example: `fix: resolve duplicate registration when module is imported twice`
 
 - `feat!: <description>`
 
   - Changes that break backward compatibility
   - Triggers **MAJOR** version bump (1.0.0 → 2.0.0)
-  - Example: `feat!: change access policy API to async methods`
+  - Example: `feat!: change ToolRegistryService API to async`
 
 - `docs: <description>`
 
@@ -112,22 +110,22 @@ We follow [Conventional Commits](https://www.conventionalcommits.org/). Each com
 
   - Adding or modifying tests
   - **No version bump**
-  - Example: `test: add unit tests for access control plugin`
+  - Example: `test: add unit tests for ToolRegistryService`
 
 - `refactor: <description>`
 
   - Code changes that neither fix bugs nor add features
   - **No version bump**
-  - Example: `refactor: simplify access policy logic`
+  - Example: `refactor: simplify AiToolsExplorer registration flow`
 
 - `chore: <description>`
   - Maintenance tasks, dependency updates, etc
   - **No version bump**
-  - Example: `chore: update mongoose to v7`
+  - Example: `chore: bump peer dependency on ai`
 
 ## Need Help?
 
-- 🐛 [Open an issue](https://github.com/idbenami/nestjs-mongoose-dac/issues)
-- 🤝 Ask questions in PRs
+- [Open an issue](https://github.com/idbenami/nestjs-ai-toolkit/issues)
+- Ask questions in PRs
 
 Don't worry too much about getting everything perfect. We're happy to help guide you through the process and fix any issues along the way.
