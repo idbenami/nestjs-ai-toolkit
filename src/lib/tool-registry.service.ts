@@ -20,7 +20,7 @@ export class ToolRegistryService {
 	 * Each provider's `build(ctx)` is called to produce a fresh Tool per invocation.
 	 */
 	buildToolSet<TContext extends ToolContext>(ctx: TContext, filter?: ToolFilter): Record<string, Tool> {
-		const result: Record<string, Tool> = {};
+		const result = Object.create(null) as Record<string, Tool>;
 		for (const [name, { provider, metadata }] of this.explorer.getAll()) {
 			if (matchesFilter(metadata, filter)) {
 				result[name] = (provider as AiToolProvider<TContext>).build(ctx);

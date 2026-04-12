@@ -3,6 +3,7 @@ import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { DiscoveryService } from '@nestjs/core';
 import { InstanceWrapper } from '@nestjs/core/injector/instance-wrapper';
 import { AiToolsMetadataAccessor } from './ai-tools-metadata.accessor';
+import { assertValidToolName } from './common/validate-tool-name';
 import type { AiToolMetadata } from './interfaces/ai-tool-metadata.interface';
 import type { AiToolProvider } from './interfaces/ai-tool-provider.interface';
 
@@ -38,9 +39,16 @@ export class AiToolsExplorer implements OnModuleInit {
 		this.logDiscoveredTools();
 	}
 
+	/** Same resolution as Nest discovery: metatype when static, else instance class (e.g. useClass / dynamic). */
+	private resolveProviderClass(wrapper: InstanceWrapper): Type | undefined {
+		return !wrapper.metatype || wrapper.inject
+			? (wrapper.instance?.constructor as Type | undefined)
+			: (wrapper.metatype as Type);
+	}
+
 	private filterAiTools(providers: InstanceWrapper[]): InstanceWrapper[] {
 		return providers.filter((wrapper) => {
-			const target = !wrapper.metatype || wrapper.inject ? (wrapper.instance?.constructor as Type | undefined) : wrapper.metatype;
+			const target = this.resolveProviderClass(wrapper);
 			if (!target) return false;
 			return this.metadataAccessor.isAiTool(target);
 		});
@@ -48,11 +56,25 @@ export class AiToolsExplorer implements OnModuleInit {
 
 	private registerTool(wrapper: InstanceWrapper): void {
 		const { instance, metatype } = wrapper;
-		if (!instance) return;
+
+		if (!instance) {
+			const target = this.resolveProviderClass(wrapper);
+			if (target && this.metadataAccessor.isAiTool(target)) {
+				const metadata = this.metadataAccessor.getMetadata(target);
+				const label = metadata?.name ?? target.name;
+				throw new Error(
+					`@AiTool('${label}') on ${target.name} could not be registered: provider instance is missing at module init. ` +
+						'Use default (singleton) scope for @AiTool() classes, or register a factory that yields the tool provider when the module starts.',
+				);
+			}
+			return;
+		}
 
 		const target = (instance.constructor as Type) || metatype;
 		const metadata = this.metadataAccessor.getMetadata(target);
 		if (!metadata) return;
+
+		assertValidToolName(metadata.name);
 
 		if (typeof (instance as unknown as AiToolProvider).build !== 'function') {
 			throw new Error(`@AiTool('${metadata.name}') on ${target.name} must implement AiToolProvider.build()`);
@@ -78,8 +100,9 @@ export class AiToolsExplorer implements OnModuleInit {
 		this.logger.log(`Discovered ${this.tools.size} AI tool(s): [${names}]`);
 	}
 
+	/** Returns a shallow copy so callers cannot mutate the internal registry map. */
 	getAll(): Map<string, ToolEntry> {
-		return this.tools;
+		return new Map(this.tools);
 	}
 
 	get(name: string): ToolEntry | undefined {

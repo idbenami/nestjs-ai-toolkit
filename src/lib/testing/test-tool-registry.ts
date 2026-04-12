@@ -4,6 +4,7 @@ import type { AiToolProvider } from '../interfaces/ai-tool-provider.interface';
 import type { ToolContext } from '../interfaces/tool-context.interface';
 import type { ToolFilter } from '../interfaces/tool-filter.interface';
 import { matchesFilter } from '../common/matches-filter';
+import { assertValidToolName } from '../common/validate-tool-name';
 
 interface TestToolEntry {
 	provider: AiToolProvider;
@@ -18,6 +19,7 @@ export class TestToolRegistry {
 	private tools = new Map<string, TestToolEntry>();
 
 	register(provider: AiToolProvider, metadata: AiToolMetadata): this {
+		assertValidToolName(metadata.name);
 		if (this.tools.has(metadata.name)) {
 			throw new Error(`Duplicate tool name "${metadata.name}" in TestToolRegistry`);
 		}
@@ -26,7 +28,7 @@ export class TestToolRegistry {
 	}
 
 	buildToolSet<TContext extends ToolContext>(ctx: TContext, filter?: ToolFilter): Record<string, Tool> {
-		const result: Record<string, Tool> = {};
+		const result = Object.create(null) as Record<string, Tool>;
 		for (const [name, { provider, metadata }] of this.tools) {
 			if (matchesFilter(metadata, filter)) {
 				result[name] = (provider as AiToolProvider<TContext>).build(ctx);

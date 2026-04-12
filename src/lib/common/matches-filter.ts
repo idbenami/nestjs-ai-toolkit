@@ -6,7 +6,12 @@ export function matchesFilter(metadata: AiToolMetadata, filter?: ToolFilter): bo
 
 	if (filter.include && !filter.include.includes(metadata.name)) return false;
 	if (filter.exclude?.includes(metadata.name)) return false;
-	if (filter.mode && metadata.modes && metadata.modes.length > 0 && !metadata.modes.includes(filter.mode)) return false;
+	if (filter.mode) {
+		if (metadata.modes !== undefined) {
+			if (metadata.modes.length === 0) return false;
+			if (!metadata.modes.includes(filter.mode)) return false;
+		}
+	}
 	if (filter.tags) {
 		if (!metadata.tags) return false;
 		const hasAll = filter.tags.every((t) => metadata.tags!.includes(t));

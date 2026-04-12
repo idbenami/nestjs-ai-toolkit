@@ -50,6 +50,14 @@ describe('ToolRegistryService', () => {
 			expect(Object.keys(toolSet)).toEqual(['readFile']);
 		});
 
+		it('should exclude tools with empty modes when filtering by mode', () => {
+			const entries = new Map([mockToolEntry('readFile', { modes: [] }), mockToolEntry('editFile', { modes: ['agent'] })]);
+			mockExplorer.getAll.mockReturnValue(entries);
+
+			const toolSet = registry.buildToolSet({}, { mode: 'agent' });
+			expect(Object.keys(toolSet)).toEqual(['editFile']);
+		});
+
 		it('should filter by exclude', () => {
 			const entries = new Map([mockToolEntry('readFile'), mockToolEntry('editFile')]);
 			mockExplorer.getAll.mockReturnValue(entries);

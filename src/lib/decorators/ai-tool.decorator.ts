@@ -13,7 +13,7 @@ import type { AiToolMetadata } from '../interfaces/ai-tool-metadata.interface';
  *
  * @example Full metadata:
  * ```ts
- * @AiTool({ name: 'readFile', category: 'file-ops', modes: ['plan', 'agent'] })
+ * @AiTool({ name: 'readFile', modes: ['plan', 'agent'], tags: ['file-ops'] })
  * export class ReadFileTool implements AiToolProvider { ... }
  * ```
  */

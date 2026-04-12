@@ -92,4 +92,32 @@ describe('AiToolsExplorer', () => {
 		explorer.onModuleInit();
 		expect(explorer.get('nonexistent')).toBeUndefined();
 	});
+
+	it('should throw when @AiTool provider has no instance at module init', () => {
+		class GhostTool {}
+		const wrapper = {
+			instance: undefined,
+			metatype: GhostTool,
+			inject: undefined,
+		};
+
+		mockDiscoveryService.getProviders.mockReturnValue([wrapper]);
+		mockMetadataAccessor.isAiTool.mockReturnValue(true);
+		mockMetadataAccessor.getMetadata.mockReturnValue({ name: 'ghost' });
+
+		expect(() => explorer.onModuleInit()).toThrow(/could not be registered/);
+		expect(() => explorer.onModuleInit()).toThrow(/singleton/);
+	});
+
+	it('should throw when tool name is invalid', () => {
+		const provider = createMockProvider('bad');
+		const wrapper = createProviderWrapper(provider);
+		const metadata = { name: '__proto__' };
+
+		mockDiscoveryService.getProviders.mockReturnValue([wrapper]);
+		mockMetadataAccessor.isAiTool.mockReturnValue(true);
+		mockMetadataAccessor.getMetadata.mockReturnValue(metadata);
+
+		expect(() => explorer.onModuleInit()).toThrow('reserved');
+	});
 });
