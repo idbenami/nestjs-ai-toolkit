@@ -4,10 +4,8 @@ NestJS module that bridges [Vercel AI SDK](https://ai-sdk.dev/) tools with NestJ
 
 ## Installation
 
-The library is internal to this monorepo. Import it via:
-
 ```ts
-import { AiToolsModule, ToolRegistryService, AiTool } from 'nestjs-ai-toolkit';
+npm install nestjs-ai-toolkit
 ```
 
 ## Quick Start
