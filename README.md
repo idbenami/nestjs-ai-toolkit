@@ -1,4 +1,4 @@
-# @elementor-vibe/nestjs-ai-toolkit
+# nestjs-ai-toolkit
 
 NestJS module that bridges [Vercel AI SDK](https://ai-sdk.dev/) tools with NestJS dependency injection. Define AI tools as injectable providers, auto-discover them via decorator metadata, and build typed tool sets for `streamText`/`generateText` calls.
 
@@ -7,7 +7,7 @@ NestJS module that bridges [Vercel AI SDK](https://ai-sdk.dev/) tools with NestJ
 The library is internal to this monorepo. Import it via:
 
 ```ts
-import { AiToolsModule, ToolRegistryService, AiTool } from '@elementor-vibe/nestjs-ai-toolkit';
+import { AiToolsModule, ToolRegistryService, AiTool } from 'nestjs-ai-toolkit';
 ```
 
 ## Quick Start
@@ -19,7 +19,7 @@ tools need — typically a tenant/project ID and anything else passed at call ti
 writer):
 
 ```ts
-import { ToolContext } from '@elementor-vibe/nestjs-ai-toolkit';
+import { ToolContext } from 'nestjs-ai-toolkit';
 import type { UIMessageStreamWriter } from 'ai';
 
 // Define once, use everywhere
@@ -32,7 +32,7 @@ export interface AppToolContext extends ToolContext {
 ### 2. Define a tool
 
 ```ts
-import { AiTool, AiToolProvider } from '@elementor-vibe/nestjs-ai-toolkit';
+import { AiTool, AiToolProvider } from 'nestjs-ai-toolkit';
 import { tool } from 'ai';
 import z from 'zod';
 import type { AppToolContext } from './app-tool-context';
@@ -88,7 +88,7 @@ export class EditFileTool implements AiToolProvider<AppToolContext> { ... }
 
 ```ts
 import { Module } from '@nestjs/common';
-import { AiToolsModule } from '@elementor-vibe/nestjs-ai-toolkit';
+import { AiToolsModule } from 'nestjs-ai-toolkit';
 
 @Module({
   imports: [AiToolsModule],
@@ -103,7 +103,7 @@ Pass the per-request context — including any stream writer — to `buildToolSe
 
 ```ts
 import { Injectable } from '@nestjs/common';
-import { ToolRegistryService } from '@elementor-vibe/nestjs-ai-toolkit';
+import { ToolRegistryService } from 'nestjs-ai-toolkit';
 import { streamText } from 'ai';
 import type { AppToolContext } from './app-tool-context';
 
@@ -205,7 +205,7 @@ import {
   TestToolRegistry,
   createMockToolProvider,
   createMockToolContext,
-} from '@elementor-vibe/nestjs-ai-toolkit/testing';
+} from 'nestjs-ai-toolkit/testing';
 ```
 
 ### Unit-test a single tool
