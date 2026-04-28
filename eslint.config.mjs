@@ -1,22 +1,11 @@
-import baseConfig from '../../eslint.config.mjs';
+// @ts-check
+import js from '@eslint/js';
+import tseslint from 'typescript-eslint';
 
-export default [
-	...baseConfig,
+export default tseslint.config(
+	js.configs.recommended,
+	...tseslint.configs.recommended,
 	{
-		files: ['**/*.json'],
-		rules: {
-			'@nx/dependency-checks': [
-				'error',
-				{
-					ignoredFiles: ['{projectRoot}/eslint.config.{js,cjs,mjs,ts,cts,mts}'],
-				},
-			],
-		},
-		languageOptions: {
-			parser: await import('jsonc-eslint-parser'),
-		},
+		ignores: ['dist/**', 'node_modules/**', 'coverage/**'],
 	},
-	{
-		ignores: ['**/out-tsc'],
-	},
-];
+);
